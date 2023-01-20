@@ -9,4 +9,6 @@ import { HomeView } from '@/views';
   </AppLayout>
 </template>
 
-
+<style lang="scss">
+@import "@/assets/scss/app.scss";
+</style>
