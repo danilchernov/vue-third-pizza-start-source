@@ -3,6 +3,6 @@ import AppHeader from "@/layouts/AppHeader.vue";
 </script>
 
 <template>
-	<AppHeader />
-	<slot />
+  <AppHeader />
+  <slot />
 </template>

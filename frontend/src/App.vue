@@ -1,6 +1,6 @@
 <script setup>
-import { AppLayout } from '@/layouts';
-import { HomeView } from '@/views';
+import { AppLayout } from "@/layouts";
+import { HomeView } from "@/views";
 </script>
 
 <template>
