@@ -1,11 +1,39 @@
-<script setup>
-import { toRef } from "vue";
-import { MAX_INGREDIENT_COUNT } from "@/common/constants";
+<template>
+  <div class="ingredients__filling">
+    <p>Начинка:</p>
 
+    <ul class="ingredients__list">
+      <li
+        v-for="ingredient in items"
+        :key="ingredient.id"
+        class="ingredients__item"
+      >
+        <AppDrag
+          :data-transfer="ingredient"
+          :draggable="values[ingredient.id] < MAX_INGREDIENT_COUNT"
+        >
+          <span class="filling" :class="`filling--${ingredient.value}`">
+            {{ ingredient.name }}
+          </span>
+        </AppDrag>
+
+        <AppCounter
+          class="ingredients__counter"
+          :max="MAX_INGREDIENT_COUNT"
+          :value="values[ingredient.id]"
+          @input="($event) => inputValue(ingredient.id, $event)"
+        />
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup>
+import { MAX_INGREDIENT_COUNT } from "@/common/constants";
 import AppDrag from "@/common/components/AppDrag.vue";
 import AppCounter from "@/common/components/AppCounter.vue";
 
-const props = defineProps({
+defineProps({
   values: {
     type: Object,
     default: () => ({}),
@@ -17,46 +45,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update"]);
-const values = toRef(props, "values");
-
-const getValue = (ingredient) => {
-  return values.value[ingredient] ?? 0;
-};
 
 const setValue = (ingredient, count) => {
   emit("update", ingredient, Number(count));
 };
+
+const inputValue = (ingredient, count) => {
+  setValue(ingredient, Math.min(MAX_INGREDIENT_COUNT, Number(count)));
+};
 </script>
-
-<template>
-  <div class="ingredients__filling">
-    <p>Начинка:</p>
-
-    <ul class="ingredients__list">
-      <li
-        v-for="ingredientType in items"
-        :key="ingredientType.id"
-        class="ingredients__item"
-      >
-        <AppDrag
-          :data-transfer="ingredientType"
-          :draggable="getValue(ingredientType.value) < MAX_INGREDIENT_COUNT"
-        >
-          <span class="filling" :class="`filling--${ingredientType.value}`">
-            {{ ingredientType.name }}
-          </span>
-        </AppDrag>
-
-        <AppCounter
-          class="ingredients__counter"
-          :max="MAX_INGREDIENT_COUNT"
-          :value="getValue(ingredientType.value)"
-          @input="setValue(ingredientType.value, $event)"
-        />
-      </li>
-    </ul>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/ds-system/ds.scss";

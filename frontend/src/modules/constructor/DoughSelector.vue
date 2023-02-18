@@ -1,18 +1,3 @@
-<script setup>
-defineProps({
-  modelValue: {
-    type: String,
-    default: "",
-  },
-  items: {
-    type: Array,
-    default: () => [],
-  },
-});
-
-const emit = defineEmits(["update:modelValue"]);
-</script>
-
 <template>
   <div class="content__dough">
     <div class="sheet">
@@ -23,15 +8,15 @@ const emit = defineEmits(["update:modelValue"]);
           v-for="doughType in items"
           :key="doughType.id"
           class="dough__input dough__input--light"
-          :class="`dough__input dough__input--${doughType.value}`"
+          :class="`dough__input dough__input--${doughType.id}`"
         >
           <input
             type="radio"
             name="dought"
-            :value="doughType.value"
-            :checked="doughType.value === modelValue"
+            :value="doughType.id"
+            :checked="doughType.id === modelValue"
             class="visually-hidden"
-            @input="emit('update:modelValue', doughType.value)"
+            @input="() => emit('update:modelValue', doughType.id)"
           />
           <b>{{ doughType.name }}</b>
           <span>{{ doughType.description }}</span>
@@ -40,6 +25,21 @@ const emit = defineEmits(["update:modelValue"]);
     </div>
   </div>
 </template>
+
+<script setup>
+defineProps({
+  modelValue: {
+    type: Number,
+    required: true,
+  },
+  items: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const emit = defineEmits(["update:modelValue"]);
+</script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/ds-system/ds.scss";

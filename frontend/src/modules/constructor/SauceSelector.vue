@@ -1,18 +1,3 @@
-<script setup>
-defineProps({
-  modelValue: {
-    type: String,
-    default: "",
-  },
-  items: {
-    type: Array,
-    default: () => [],
-  },
-});
-
-const emit = defineEmits(["update:modelValue"]);
-</script>
-
 <template>
   <div class="ingredients__sauce">
     <p>Основной соус:</p>
@@ -25,14 +10,29 @@ const emit = defineEmits(["update:modelValue"]);
       <input
         type="radio"
         name="sauce"
-        :value="sauceType.value"
-        :checked="sauceType.value === modelValue"
-        @input="emit('update:modelValue', sauceType.value)"
+        :value="sauceType.id"
+        :checked="sauceType.id === modelValue"
+        @input="emit('update:modelValue', sauceType.id)"
       />
       <span>{{ sauceType.name }}</span>
     </label>
   </div>
 </template>
+
+<script setup>
+defineProps({
+  modelValue: {
+    type: Number,
+    required: true,
+  },
+  items: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const emit = defineEmits(["update:modelValue"]);
+</script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/ds-system/ds.scss";
