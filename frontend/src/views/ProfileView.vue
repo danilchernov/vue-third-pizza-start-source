@@ -3,42 +3,30 @@
     <h1 class="title title--big">Мои данные</h1>
   </div>
 
-  <div class="user">
-    <picture>
-      <source
-        type="image/webp"
-        srcset="
-          @/assets/img/users/user5@2x.webp 1x,
-          @/assets/img/users/user5@4x.webp 2x
-        "
-      />
-      <img
-        src="@/assets/img/users/user5@2x.jpg"
-        srcset="@/assets/img/users/user5@4x.jpg"
-        alt="Василий Ложкин"
-        width="72"
-        height="72"
-      />
-    </picture>
+  <div v-if="authStore.user" class="user">
+    <img
+      :src="getPublicImage(authStore.user.avatar)"
+      :alt="authStore.user.name"
+      width="72"
+      height="72"
+    />
     <div class="user__name">
-      <span>Василий Ложкин</span>
+      <span>{{ authStore.user.name }}</span>
     </div>
-    <p class="user__phone">Контактный телефон: <span>+7 999-999-99-99</span></p>
+    <p class="user__phone">
+      Контактный телефон: <span>{{ authStore.user.phone }}</span>
+    </p>
   </div>
 
   <div class="layout__address">
-    <div class="sheet address-form">
-      <div class="address-form__header">
-        <b>Адрес №1. Тест</b>
-        <div class="address-form__edit">
-          <button type="button" class="icon">
-            <span class="visually-hidden">Изменить адрес</span>
-          </button>
-        </div>
-      </div>
-      <p>Невский пр., д. 22, кв. 46</p>
-      <small>Позвоните, пожалуйста, от проходной</small>
-    </div>
+    <AddressCard
+      v-for="(address, index) in profileStore.addresses"
+      :key="address.id"
+      :address="address"
+      :index="index + 1"
+      @delete="profileStore.removeAddress(address.id)"
+      @save="updateAddress(address, $event)"
+    />
   </div>
 
   <div class="layout__address">
@@ -116,14 +104,52 @@
     </form>
   </div>
 
-  <div class="layout__button">
-    <button type="button" class="button button--border">
+  <div v-if="!isNewAddressFormOpened" class="layout__button">
+    <button
+      type="button"
+      class="button button--border"
+      @click="isNewAddressFormOpened = true"
+    >
       Добавить новый адрес
     </button>
   </div>
+
+  <div v-else class="layout__address">
+    <address-edit-form
+      title="Новый адрес"
+      @save="addAddress"
+      @delete="isNewAddressFormOpened = false"
+    />
+  </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+import { useAuthStore, useProfileStore } from "@/stores";
+
+import AddressCard from "@/common/components/address/AddressCard.vue";
+import AddressEditForm from "@/common/components/address/AddressEditForm.vue";
+
+import { getPublicImage } from "@/common/helpers/public-image";
+
+const authStore = useAuthStore();
+const profileStore = useProfileStore();
+
+const isNewAddressFormOpened = ref(false);
+
+const addAddress = async (address) => {
+  await profileStore.addAddress(address);
+  isNewAddressFormOpened.value = false;
+};
+
+const updateAddress = (address, data) => {
+  profileStore.updateAddress({
+    ...address,
+    ...data,
+  });
+};
+</script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/ds-system/ds.scss";

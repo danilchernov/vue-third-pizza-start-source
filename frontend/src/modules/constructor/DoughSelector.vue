@@ -89,7 +89,7 @@ const emit = defineEmits(["update:modelValue"]);
   &--light {
     b {
       &::before {
-        background-image: url("@/assets/img/dough-light.svg");
+        background-image: url("/api/public/img/dough-light.svg");
       }
     }
   }
@@ -97,7 +97,7 @@ const emit = defineEmits(["update:modelValue"]);
   &--large {
     b {
       &::before {
-        background-image: url("@/assets/img/dough-large.svg");
+        background-image: url("/api/public/img/dough-large.svg");
       }
     }
   }
